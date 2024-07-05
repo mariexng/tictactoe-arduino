@@ -1,7 +1,7 @@
 # tictactoe-arduino
-Tic Tac Toe auf dem Arduino-Uno
-- 1 Spieler Mode gegen AI
-- 2 Spieler Mode
+Tic Tac Toe on the Arduino-Uno
+- 1 Player Mode against AI
+- 2 Player Mode
 - 2.4 Inch TFT LCD Touch Display
   
 
