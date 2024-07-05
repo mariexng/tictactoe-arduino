@@ -69,7 +69,7 @@ void loop() {
     }
   }
   if (gamemode == ONE_PLAYER_MODE){
-    runGame(false);
+    runGame(false); // OnePlayer = false, TwoPlayer = true
   }
   else if (gamemode == TWO_PLAYER_MODE){
     runGame(true);
@@ -85,8 +85,8 @@ void runGame(bool twoPlayer){
   int turnCount = 0;
 
   while (turnCount < 9 && !isWin()){
-    if (!twoPlayer && currentPlayerSign == PLAYER_O){
-      delay(800);
+    if (!twoPlayer && currentPlayerSign == PLAYER_O){  // if its singeplayer mode and its AI turn
+      delay(800);  // delay to make the AI move feel more natural
       moveAI();
     }
     else{
@@ -95,8 +95,8 @@ void runGame(bool twoPlayer){
     }
     printBoard();
     turnCount++;
-    if (!isWin()){
-      currentPlayerSign = (currentPlayerSign == 'x') ? 'o' : 'x';
+    if (!isWin()){ //switch the current Player if game isnt over
+      currentPlayerSign = (currentPlayerSign == 'x') ? 'o' : 'x'; 
     }
   }
   delay(2000);
@@ -138,7 +138,7 @@ void drawHomeScreen(String caption){
   btnTwoPlayer.drawButton();
 }
 
-void drawGrid(){
+void drawGrid(){  // draws the gamefield grid on touchscreen
   // 320x 240y -> 80x80 Boxes
   tft.fillScreen(BLACK);
   for (int i=0; i < 5; i++){
@@ -151,7 +151,7 @@ void drawGrid(){
   }
 }
 
-void drawXO(int x, int y, char sign){
+void drawXO(int x, int y, char sign){ // draw the given sign to the given position on touchscreen
   if (sign == PLAYER_O){
     tft.drawCircle(x, y, 20, BLUE);
   }
@@ -161,7 +161,7 @@ void drawXO(int x, int y, char sign){
   }
 }
 
-void drawMove(int pos){
+void drawMove(int pos){  //draw the player move on touchscreen
   switch(pos){
     case 0: drawXO(75, 40, currentPlayerSign); break;
     case 1: drawXO(160, 40, currentPlayerSign); break;
@@ -182,7 +182,7 @@ void drawGameOverScreen(String winner){
   tft.print("Game Over. "+ winner + "wins.");
 }
 
-void setMove(int pos){
+void setMove(int pos){  // sets the move of given position internally and on touchscreen
   gameBoard[dictionary[pos].row][dictionary[pos].col] = currentPlayerSign;
   drawMove(pos);
 }
@@ -211,7 +211,7 @@ bool isWin(){ // check if one player has won
           isEquals(gameBoard[0][2], gameBoard[1][1],gameBoard[2][0]));
 }
 
-void printBoard(){
+void printBoard(){  // prints board to console
   for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++){
         Serial.print(gameBoard[i][j]);
@@ -221,7 +221,7 @@ void printBoard(){
   }
 }
 
-void movePlayer(){
+void movePlayer(){ // sets sign according to where the player pressed the touch screen (if the field is empty)
   bool validMove = false;
   Serial.println(String(currentPlayerSign) + " turn");
   do{
@@ -269,17 +269,17 @@ void movePlayer(){
   }while(!validMove);
 }
 
-void moveAI(){
-  int winAI = ableToWin(PLAYER_O);
-  int winPlayer = ableToWin(PLAYER_X);
+void moveAI(){ 
+  int winAI = ableToWin(PLAYER_O); // check if player o can win
+  int winPlayer = ableToWin(PLAYER_X); // check if player x can win
 
-  if (winAI != -1){
+  if (winAI != -1){  // set move to win the game /else to block the player
     setMove(winAI);
   }
   else if(winPlayer != -1){
     setMove(winPlayer);
   }
-  else{
+  else{ // random move on empty field
     bool validMove = false;
     while (!validMove){
       int move = random(0, 9);
@@ -291,7 +291,7 @@ void moveAI(){
   }
 }
 
-int ableToWin(char sign){ //checks if any sign is able to win in the next turn
+int ableToWin(char sign){ //checks if any sign is able to win in the next turn and returns the fieldnumber
   for (int i = 0; i < 3; i++){
     // check rows
     if (gameBoard[i][1] == sign && gameBoard[i][2] == sign && isFieldEmpty(i * 3)) return i * 3;
